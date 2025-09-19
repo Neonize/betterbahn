@@ -12,9 +12,7 @@ export const SearchForm = () => {
 	const [urlParseError, setUrlParseError] = useState<string | null>(null);
 	const { formData, updateFormData } = useSearchFormData();
 
-	const handleUrlParsingAndNavigation = (e: React.FormEvent) => {
-		e.preventDefault();
-
+	const handleUrlParsingAndNavigation = () => {
 		if (!url.trim()) {
 			setUrlParseError(
 				"Please enter text containing a DB booking URL or paste a direct DB booking link"
@@ -42,26 +40,6 @@ export const SearchForm = () => {
 
 		router.push(`/discount?${searchParams.toString()}`);
 	};
-
-	// Generate the target URL for the link (when form is valid)
-	const getTargetUrl = () => {
-		if (!url.trim()) return null;
-
-		const extractedUrl = extractUrlFromText(url);
-		if (!extractedUrl) return null;
-
-		const searchParams = new URLSearchParams({
-			url: extractedUrl,
-			bahnCard: formData.bahnCard,
-			hasDeutschlandTicket: String(formData.hasDeutschlandTicket),
-			passengerAge: String(formData.passengerAge),
-			travelClass: formData.travelClass,
-		});
-
-		return `/discount?${searchParams.toString()}`;
-	};
-
-	const targetUrl = getTargetUrl();
 
 	return (
 		<section>
@@ -149,20 +127,7 @@ export const SearchForm = () => {
 					</div>
 					</fieldset>
 
-					{targetUrl ? (
-						<a
-							href={targetUrl}
-							onClick={(e) => {
-								e.preventDefault();
-								handleUrlParsingAndNavigation(e);
-							}}
-							role="button"
-							aria-describedby="form-description"
-							className="w-full bg-primary text-white py-3 px-4 rounded-full hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors text-lg font-semibold inline-block text-center no-underline"
-						>
-							Bessere Verbindung suchen
-						</a>
-					) : (
+					<div className="pt-8">
 						<button
 							type="submit"
 							disabled={!url.trim()}
